@@ -1,0 +1,19 @@
+function HD_SCORE = computeHD_Score ( RDC1, RDC2, VECTORS, ...
+			  HDEXCHANGE, HBOND, peakIDs, HSHIFTS, ...
+			  NSHIFTS, TYPES, SSTRUCT, NOES, ALLDISTS, IALLDISTS,...
+			   SHIFTS_Filename, SHIFTX_Filename, ...
+				     MASTER)
+
+addpath('~njp/code/JBN-Submission-Snapshot-06-15-07/NVR/Routines');
+
+S1 = updateTen(MASTER,RDC1,VECTORS);
+S2 = updateTen(MASTER,RDC2,VECTORS);
+
+[RP1_A,RP2_A,HDE_A,TP_A,CP_A,SXCP_A,SSCP_A] = prepareBPGs (RDC1,VECTORS,S1,RDC2,S2,HDEXCHANGE,HBOND,peakIDs,HSHIFTS,NSHIFTS,TYPES,SSTRUCT,NOES,IALLDISTS,ALLDISTS, SHIFTS_Filename,SHIFTX_Filename,MASTER);
+
+MASTER = fixDoubleAssignments(MASTER,S1,RDC1,VECTORS,S2,RDC2,TP_A,CP_A,SXCP_A,SSCP_A,HDE_A,RP1_A,RP2_A);
+
+JOINT       = ren(RP1_A.*RP2_A.*HDE_A.*TP_A.*CP_A.*SXCP_A.*SSCP_A).*MASTER;
+JOINT       = [nonzeros(JOINT)'];
+HD_SCORE    = mean(log(JOINT));
+

@@ -1,0 +1,42 @@
+function [A,B,ROWIN,COLIN]=reduce(A,B,ROWIN,COLIN)
+ain=A;
+bin=B;
+ct=1;row=[1:size(A,1)];col=[1:size(A,2)];
+for(i=1:size(A,1))
+   x=find(A(i,:));
+   if(length(x)==1)
+      row(i)=0;
+      col(x)=0;   
+   end
+end
+B=B.*A;
+for(i=1:size(B,1))
+   if(sum(B(i,:))==0)
+      if(i<=size(bin,1))
+         B(i,:)=bin(i,:);
+      end
+      if(sum(B(i,:))==0)
+         B(i,:)=1;
+      end
+   end
+   B(i,:)=B(i,:)/sum(B(i,:));
+end
+if(isempty(row))
+   return
+end
+row=find(row);
+col=find(col);
+B=B(row,col);
+for(i=1:size(B,1))
+   if(sum(B(i,:))==0)
+      if(i<=size(bin,1) & size(B,2)==size(bin,2))
+         B(i,:)=bin(i,:);
+      end
+      if(sum(B(i,:))==0)
+         B(i,:)=1;
+      end
+   end
+   B(i,:)=B(i,:)/sum(B(i,:));
+end
+ROWIN=ROWIN(row);
+COLIN=COLIN(col);

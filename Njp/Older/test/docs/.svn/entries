@@ -1,0 +1,54 @@
+8
+
+dir
+2
+file:///home2/apaydin/SvnRepository/NVR/trunk/Njp/Older/test/docs
+file:///home2/apaydin/SvnRepository
+
+
+
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+5da7b843-d4c5-4e95-95fb-8464e7c09f32
+
+documentation.pdf
+file
+
+
+
+
+2009-05-31T13:27:10.000000Z
+269bb9aa52440861f0f13d9ad5e6363f
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+has-props
+
+results.pdf
+file
+
+
+
+
+2009-05-31T13:27:10.000000Z
+50e2b58dafa8c777db556ecfdbfa82f7
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+has-props
+

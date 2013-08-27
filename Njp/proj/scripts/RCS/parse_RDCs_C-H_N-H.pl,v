@@ -1,0 +1,94 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2008.05.15.19.08.43;	author apaydin;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2008.05.15.18.28.49;	author apaydin;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@prints the RDCs in the order of myinput.m
+@
+text
+@#!/usr/bin/perl
+
+%res_num_to_rdc = ();
+
+open(MR, "< 1D3Z.mr");
+while ($line = <MR>) {
+	if ($line =~ m/^!!! DipolarCouplings\.(.+)/) {
+		if (keys(%res_num_to_rdc) > 0) {
+			if (-e "myinput.m") {
+#			if (-e "hsqcdata.m") {
+				open(OUT, "> $rdc_type.m");
+#				open(HSQC, "< hsqcdata.m");
+				open(HSQC, "< myinput.m");
+				$peak = 1;
+				while ($line = <HSQC>) {
+					if ($line =~ m/^(\d+)\s+/) {
+						$res_num = $1;
+		
+						if (exists($res_num_to_rdc{$res_num})) {
+							$rdc = $res_num_to_rdc{$res_num};
+							if ($rdc_type =~ m/C-H/) {
+								$rdc = $rdc * 0.491;
+							}
+						} else {
+							$rdc = -999;
+						}
+				
+						print OUT "$res_num\t$rdc\n";
+					}
+				}
+				close(HSQC);
+				close(OUT);
+			}
+		}
+		%res_num_to_rdc = ();
+		$rdc_type = $1;
+	}
+	if ($line =~ m/resid\s+(\d+) and name\s+(\w+)\)\s+(\-*\d+.\d+).+$/) {
+		$res_num = $1;
+		$atom_type = $2;
+		$rdc = $3;
+
+		if ($atom_type eq "HA") {
+			$res_num_to_rdc{$res_num} = $rdc;
+		} elsif ($atom_type eq "HN") {
+			$res_num_to_rdc{$res_num} = $rdc;
+		}
+	}
+}
+close(MR);
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d9 2
+a10 1
+			if (-e "hsqcdata.m") {
+d12 2
+a13 1
+				open(HSQC, "< hsqcdata.m");
+d50 1
+a50 1
+close(MR);@

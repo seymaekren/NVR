@@ -1,0 +1,51 @@
+This file explains how to use this distribution
+
+Directories
+CHEMSHIFTSTATS:  Contains various files with chemical shift stats for use
+by NVR and HD
+
+HDB:  Contains various files with sidechain chemical shift stats for use
+by HD
+
+
+hd: matlab scripts for the program hd.
+nvr: matlab scripts for the program nvr
+tenest: matlab scripts for the tensor estimation program, as used by GD
+
+pdbDB: a database of protonated models, these are derived from PDB files
+and split into different chains, when appropriate. 
+
+exampledata: contains example data for input to the tensor estimation and
+nvr algorithms. there are also three subdirectories hd_1ubi, hd_1h8c, hd_1esr
+that contain example input to the HD program
+
+
+RUNNING THE EXAMPLE PROGRAMS
+assuming matlab is installed and you have updated the path to point to the
+new directories (4release/nvr/, 4release/hd/, 4release/tenest), you 
+should cd to the exampledata directory and start matlab. 
+
+the file runexample.m is an executable file that demonstrates the 3 programs
+on sample data and also shows how to call the three programs. 
+
+This code works with matlab Version 5.3.1.29215a (R11.1).
+
+
+**************
+Tensor Estimation:
+Note: This is the tensor estimation program used by both GD and an older version of NVR
+
+if you type runexample(1) at the matlab prompt, the tensor estimation program will load in some ubiquitin data and a ubquitin model, then run the tensor estimates (for both RDC media), and then display the 'true tensors', the estimates, and a measure of how similar the estimate is to the real tensor, expressed as a percentile. 
+
+**************
+NVR: if you type runexample(2) at the matlab prompt, nvr will run on some ubiquitin data and the 1UBI ubiquitin model. When it is done, it will print out the accuracy, the actual assignments made, and a listing of missing peaks
+
+**************
+HD: if you type runexample(3) at the matlab prompt, a subset of HD will run. IN particular, it will perform resonance assignment on 3 different proteins, and then compute the HD score. The data are from ubiquitin. The 3 different proteins are a) 1UBI a model of ubiquitin, but not the model associated with the NMR data, b) 1H8C a homolog of ubiquitin with 16% sequence homology, and c) 1ESR a protein that is not homologous to ubiquitin. The scores computed for the proteins decrease (the values are log likelihoods, thus closer to 0 means higher likelihood) from a to c, reflecting the structural homology. Note, this example takes a while to run. 
+
+Also note: The HD algorithm also incorporates database filtering. There are no scripts for these filters. In principle, you can run HD against every protein in the PDB. However, in reality, you would apply reasonable filters.  A forthcoming publication documents our filters, which are based on sequence length and secondary structure characteristics. 
+
+
+
+PREPARING YOUR OWN DATA
+Read the file README_PREPARINGDATA.txt to learn how to prepare input files for the various programs. 

@@ -1,0 +1,82 @@
+8
+
+dir
+2
+file:///home2/apaydin/SvnRepository/NVR/trunk/Orig/4release
+file:///home2/apaydin/SvnRepository
+
+
+
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+5da7b843-d4c5-4e95-95fb-8464e7c09f32
+
+tenest
+dir
+
+exampledata
+dir
+
+nvr
+dir
+
+CHEMSHIFTSTATS
+dir
+
+hd
+dir
+
+README.txt
+file
+
+
+
+
+2009-05-31T13:27:08.000000Z
+2565319af747b60ad7f657e4709c4eba
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+
+README_PREPARINGDATA.txt
+file
+
+
+
+
+2009-05-31T13:27:08.000000Z
+53e664fd74b256e0a133c9652b3c2ba0
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+
+HDB
+dir
+
+README.txt,v
+file
+
+
+
+
+2009-05-31T13:27:08.000000Z
+b66d695f689f14fe7ee3311beac15be4
+2009-05-31T13:26:00.717447Z
+2
+apaydin
+
