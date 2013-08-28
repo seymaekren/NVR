@@ -6,56 +6,12 @@ b_runningMBP                      = 0;
 
 cd InputFiles/
 
-% $$$ !./cleanSymbolicLinks.sh
-% $$$ 
-% $$$ if (b_running1CMZ)
-% $$$   !./symbolicLinksFor1CMZ.sh
-% $$$ else
-% $$$   !./symbolicLinksForCAM2.sh
-% $$$ end
-
-    system("./checkFiles.sh")
+system('./checkFiles.sh')
 cd ..
     
-fprintf(1, 'warning. file setting is commented out\n');
-keyboard
-
 useCH_RDCs                    = 0;
 
-refineWithRDCs                = 1;
-
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1UBI/WithNVR_TOCSY/WithNTH=8.80/NOEsFromMZ_ubq/TruncatingWithLargerThresholds/WithoutRDC/1UBI.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1UBI/WithNVR_TOCSY/WithNTH=9.33/WithRDC_FirstRound/1UBI.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1UBQ/WithNVR/WithoutRDCs/WithTOCSY/WithMZ_NOE/TruncatingWithLargerThreshold/NTH=8.82/1UBQ.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1UD7/WithNVR/WithoutRDCs/WithTOCSY/MZ_NOEs/NTH=8.71/TruncatingWithLargerThreshold/1UD7.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1G6J/WithNVR/WithoutRDCs/WithTOCSY/TruncatingWithLargerThreshold/WithMZ_NOE/NTH=8.65/1G6J.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/hSRI/WithNVR_AndTOCSY/WithHD-Exchange/WithNTH=9.33/WithoutTruncating/WithoutTOCSY_Thresholding/WithoutRDCs/hSRI.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/Weighting/hSRI/WithRDCsFirstRound/hSRI.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/ff2/WithNVR_AndTOCSY/WithNTH=9.33/WithNewTruncation/WithoutRDC/ff2.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/3GB1/1GB1/WithoutRDCs/WithNTH7.14/TruncationWithLargerThreshold/1GB1.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/3GB1/2GB1/WithoutRDC/WithNTH=7.14/TruncationWithLargerThreshold/2GB1.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/3GB1/1PGB/WithoutRDC/WithTOCSY/WithNewTruncation/WithNTH=7.27/1PGB.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/193L/WithTOCSY/WithNTH=9.33/TruncatingWithNewBounds/WithoutRDC/193L.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/193L/WithTOCSY/WithNTH=9.33/TruncatingWithNewBounds/WithRDC_SecondRound/193L.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/1AKI/WithTOCSY/TruncatingWithNewBounds/NTH=9.33/WithoutRDCs/1AKI.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/1AZF/WithoutRDC/1AZF.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/Weighting/1E8L/1AZF/WithoutRDCs/1AZF.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/1BGI/WithoutRDC/1BGI.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/1H87/WithoutRDCs/1H87.txt';
-%assignmentMatrixFilename      = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/1LSC/WithoutRDCs/1LSC.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/1LSE/WithoutRDCs/1LSE.txt';
-%assignmentMatrixFilename       ='/home2/apaydin/Workdir/OptimizationFiles/1E8L/2LYZ/WithoutRDCs/2LYZ.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/3LYZ/WithoutRDCs/3LYZ.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/5LYZ/WithoutRDCs/5LYZ.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/1E8L/6LYZ/WithoutRDCs/6LYZ.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/Control/1ESR/1ESR.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1AAR/WithRDC/WithHD-exchange/With4RDCsPerResidue/1AAR.txt';
-%assignmentMatrixFilename       = '/home2/apaydin/Workdir/OptimizationFiles/Poln/WithTOCSY/WithHD-Exchange/POLN.txt';
-%assignmentMatrixFilename        = '/home2/apaydin/Workdir/OptimizationFiles/GB1/WithTOCSY/WithHD-exchange/WithRDC/1GB1.txt';
-%assignmentMatrixFilename        = '/home2/apaydin/Workdir/OptimizationFiles/GB1/WithTOCSY/WithHD-exchange/WithRDC/1GB1.txt';
-%assignmentMatrixFilename        = '/home2/apaydin/Workdir/OptimizationFiles/1D3Z/1UBI/WithNVR_TOCSY/WithNTH=8.80/NOEsFromMZ_ubq/TruncatingWithLargerThresholds/WithRDC_FirstRound/WithCH_and_NH_RDCs/1UBI.txt';
-%assignmentMatrixFilename        = '/home2/apaydin/Workdir/OptimizationFiles/1CMZ/1CMZ/WithoutRDC/1CMZ.txt';
-%assignmentMatrixFilename        = '/home2/apaydin/Workdir/MBP_100PercentCorrect.txt';
+refineWithRDCs                  = 0;
 assignmentMatrixFilename        = '/home2/apaydin/Workdir/1LYZ_100PercentCorrect.txt';
 b_printOptimizationFiles        = 1;
 useHD_Routines                  = 0; 
@@ -125,15 +81,7 @@ dbstop if warning
   
     useOrigData      = 1;
     [HSQCDATA, NOES] = readNMR_Data2(useOrigData);
-    
-%    hsqc_fid = fopen('hsqcData_ff2.txt', 'w');
-%    for hsqc_index = 1:size(HSQCDATA,1)
-%      fprintf(hsqc_fid, '%f %f\n', HSQCDATA(hsqc_index,2), HSQCDATA(hsqc_index,3));
-%    end
-%    fclose(hsqc_fid);
-%    fprintf(1, 'printed HSQC data into hsqcData_ff2.txt\n');
-%    keyboard
-    
+
     if (useOrigData)
       
       modeIndex = 7; modelIndex = 6;
@@ -222,23 +170,15 @@ dbstop if warning
       
     end
     
-    %betterHD(HSQCDATA(:,2:3),HSQCDATA(:,4:5),HSQCDATA(:,6),HSQCDATA(:,1),NOES,VECTORS, ...
-    % 	 TYPES,RESNUMS,SSTRUCT, HBOND, ALLDISTS,IALLDISTS, ...
-    % 	 SHIFTS_Filename, SHIFTX_Filename, useMBM_EM);
-    
     
     peaks      = HSQCDATA(:,2:3);
     rdcs       = HSQCDATA(:,4:5);
     HDEXCHANGE = HSQCDATA(:,6) ;
     peakIDs    = HSQCDATA(:,1) ;
-%    fprintf(1, 'peak ids are read here.\n');
-%    keyboard
   end
 
   if (b_printDistances)
     printDistances(ALLDISTS);
-    fprintf(1, 'continue? Enter return if yes, dbquit if not\n');
-    keyboard
   end
 
   if ((~runOriginalNVR) & (~runOriginalHD))
@@ -267,12 +207,5 @@ dbstop if warning
 						  IALLDISTS, SHIFTS_Filename, SHIFTX_Filename)
     
   end
-  %keyboard
-%fprintf(1, 'the assignment accuracy is %f\n', assignmentAccuracy);
-
-
-% $$$ [assignmentAccuracy,NVR_SCORE,oldNVR_SCORE]= betterNVR(HSQCDATA(:,2:3),HSQCDATA(:,4:5),HSQCDATA(:,6),HSQCDATA(:, 1),NOES,VECTORS, ...
-% $$$ 						  TYPES,RESNUMS,SSTRUCT, HBOND, ALLDISTS,SHIFTS_Filename, SHIFTX_Filename);
-
 
 

@@ -11,9 +11,7 @@ if (useOrigData)
   order                      = load ('InputFiles/order.m');
   noes                       = convertResidueIndicesToPeakIndicesInNOE_File(NOE_ListWithResidueIndices, order);
   fprintf(1, 'read %d noe constraints\n',size(noes,1));
-  noes
-  fprintf(1, 'note. these should be peak, not residue indices.\n');
-  keyboard
+  %fprintf(1, 'note. these should be peak, not residue indices.\n');
 else
   %use distrib data
   fprintf(1, 'error. please do not use useOrigData == 0\n');

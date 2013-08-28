@@ -3,67 +3,7 @@ function [M,differenceMatrixH, differenceMatrixN,alphaHelixMatrix,betaStrandMatr
 		    NTH,ROWIN,COLIN, SHIFTS_Filename, SHIFTX_Filename, ...
 		    truncateProbabilities);
 
-%NVR_SHIFTS2PROB: This computes assignment probabilities based on the program SHIFTS, it is not meant
-%             to be called by the user
-
-
-%////////////////////////////////////////////////////////////////////////////////////////////
-%//  NVR_SHIFTS2PROB.m
-%//
-%//  Version:		0.1
-%//
-%//  Description:	 This computes assignment probabilities based on BMRB statistics
-%//
-%// authors:
-%//    initials    name            organization 					email
-%//   ---------   --------------  ------------------------    ------------------------------
-%//     CJL         Chris Langmead  Dartmouth College         langmead@dartmouth.edu
-%//
-%//
-%// history:
-%//     when        who     what
-%//     --------    ----    ----------------------------------------------------------
-%//     12/02/03    CJL 	 initial version for publication [Langmead et al, J Biomol NMR 2004]
-%//
-%////////////////////////////////////////////////////////////////////////////////////////////
-
-%    NVR_SHIFTS2PROB
-%    This library is free software; you can redistribute it and/or
-%    modify it under the terms of the GNU Lesser General Public
-%    License as published by the Free Software Foundation; either
-%    version 2.1 of the License, or (at your option) any later version.
-
-%    This library is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-%    Lesser General Public License for more details.
-
-%    You should have received a copy of the GNU Lesser General Public
-%    License along with this library; if not, write to the Free Software
-%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-% 		Contact Info:
-%							Bruce Randall Donald
-%							HB 6211
-%							Dartmouth College
-%							Hanover, NH 03755
-%							brd@cs.dartmouth.edu
-
-% 		If you use publish any results derived from the use of this program please cite:
-%		"An Expectation/Maximization Nuclear Vector Replacement Algorithm for Automated NMR Resonance Assignments," 
-%		C. J. Langmead and B. R. Donald, 
-%		Journal of Biomolecular NMR, 2004 (in press)
-
-
-%  Copyright (C) 2003  Christopher James Langmead and Bruce R. Donald
-%
-%  <signature of Bruce Donald>, 2 December 2003
-%  Bruce Donald, Professor of Computer Science
-
-FILTERS=load('~/NVR/trunk/CHEMSHIFTSTATS/SHIFTSFILTERS');FILTERS=FILTERS.FILTERS;
-
-%[rn TY SS ha hn nf cb ca co]= textread('SHIFTX.m.backup','%f %s %s %f %f %f %f %f %f \n');
-%[rn hn nf]= textread('SHIFTS.m.backup','%f %f %f \n');
+FILTERS=load('NVR/CHEMSHIFTSTATS/SHIFTSFILTERS');FILTERS=FILTERS.FILTERS;
 
 [rn TY SS ha hn nf cb ca co]= textread(SHIFTX_Filename,'%f %s %s %f %f %f %f %f %f ');
 [rn hn nf]                  = textread(SHIFTS_Filename,'%f %f %f ');
@@ -81,24 +21,6 @@ alphaHelixMatrix  = zeros(size(M,1),size(M,2));
 betaStrandMatrix  = zeros(size(M,1),size(M,2));
 coilMatrix        = zeros(size(M,1),size(M,2));
 
-
-% $$$ fid = fopen('shiftsCS_Differences.txt', 'w');
-% $$$ fprintf(1, 'check out shiftsCS_Differences.txt\n');
-% $$$ for(i=1:size(TABLE,1))
-% $$$   j = i;
-% $$$   h = H(i)-PRED(j,2);
-% $$$   n = N(i)-PRED(j,3);
-% $$$   fprintf(fid, '%f %f\n', h, n);
-% $$$ end
-% $$$ 
-% $$$ for(i=1:size(TABLE,1))
-% $$$   for(j=1:length(rn))
-% $$$     h = H(i)-PRED(j,2);
-% $$$     n = N(i)-PRED(j,3);
-% $$$     fprintf(fid, '%f %f\n', h, n);
-% $$$   end
-% $$$ end
-% $$$ fclose(fid);
 for(i=1:size(TABLE,1))
    for(j=1:length(rn))
       
@@ -194,29 +116,6 @@ for(i=1:size(M,1))
    M(i,:)=M(i,:)/sum(M(i,:));
 %end
 end
-
-% $$$ nlast = sum(sum(TABLE));
-% $$$ for(i=1:100)
-% $$$    NP = NOE_PRUNE(TABLE(1:size(M,1),:),NOES,ALLDISTS,NTH,ROWIN,COLIN);
-% $$$    TABLE(1:size(M,1),:)=and(TABLE(1:size(M,1),:),NP);
-% $$$    if(sum(sum(TABLE)) == nlast)
-% $$$       break;
-% $$$    end
-% $$$    nlast = sum(sum(TABLE));
-% $$$ end
-% $$$ 
-% $$$ M = M.*TABLE;
-% $$$ 
-% $$$ %renornmalize
-% $$$ for(i=1:size(M,1))
-% $$$    if(sum(M(i,:))==0)
-% $$$       M(i,:)=1;
-% $$$    end
-% $$$    %fprintf(1, 'shifts bpg construction removed all entries for peak #%d\n',i);
-% $$$    %   else
-% $$$    M(i,:)=M(i,:)/sum(M(i,:));
-% $$$    %   end
-% $$$ end
 
 
 

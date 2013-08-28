@@ -1,62 +1,5 @@
 function M = NVR_TOCSY2PROB(peakIDs,H,N,TYPES,SSTRUCT,NOES,ALLDISTS,NTH,ROWIN,COLIN);
 
-%NVR_TOCSY2PROB: This computes assignment probabilities based on BMRB side-chain statistics, it is not meant
-%             to be called by the user
-
-
-%////////////////////////////////////////////////////////////////////////////////////////////
-%//  NVR_TOCSY2PROB.m
-%//
-%//  Version:		0.1
-%//
-%//  Description:	 This computes assignment probabilities based on BMRB statistics
-%//
-%// authors:
-%//    initials    name            organization 					email
-%//   ---------   --------------  ------------------------    ------------------------------
-%//     CJL         Chris Langmead  Dartmouth College         langmead@dartmouth.edu
-%//
-%//
-%// history:
-%//     when        who     what
-%//     --------    ----    ----------------------------------------------------------
-%//     12/02/03    CJL 	 initial version for publication [Langmead et al, J Biomol NMR 2004]
-%//
-%////////////////////////////////////////////////////////////////////////////////////////////
-
-%    NVR_TOCSY2PROB
-%    This library is free software; you can redistribute it and/or
-%    modify it under the terms of the GNU Lesser General Public
-%    License as published by the Free Software Foundation; either
-%    version 2.1 of the License, or (at your option) any later version.
-
-%    This library is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-%    Lesser General Public License for more details.
-
-%    You should have received a copy of the GNU Lesser General Public
-%    License along with this library; if not, write to the Free Software
-%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-% 		Contact Info:
-%							Bruce Randall Donald
-%							HB 6211
-%							Dartmouth College
-%							Hanover, NH 03755
-%							brd@cs.dartmouth.edu
-
-% 		If you use publish any results derived from the use of this program please cite:
-%		"An Expectation/Maximization Nuclear Vector Replacement Algorithm for Automated NMR Resonance Assignments," 
-%		C. J. Langmead and B. R. Donald, 
-%		Journal of Biomolecular NMR, 2004 (in press)
-
-
-%  Copyright (C) 2003  Christopher James Langmead and Bruce R. Donald
-%
-%  <signature of Bruce Donald>, 2 December 2003
-%  Bruce Donald, Professor of Computer Science
-
 
 [TH1,TH2,TN,TRN]=textread('InputFiles/TOCSY.m','%f %f %f %f');
 
@@ -214,23 +157,7 @@ if (isempty(firstCall))
     end
   end
 end
-%min(nonzeros(M))*10e+40
-%M(1,1)
 
-%fprintf(1, 'before commenting out thresh \n');
-%keyboard
-
-
-%M = thresh(M,min(nonzeros(M))*10e+40);
-fprintf(1, 'thresh commented out (DOING THIS for ALL PROTEINS NOW, NOT JUST FOR GB1) \n');
-%keyboard
-
-%for(i=1:size(M,1))
-%   if (M(i,i) == 0)
-%     fprintf(1, 'in TOCSY prob. computation, after thresh, i = %d M(i,i) = 0\n',i);
-%     keyboard
-%   end
-%end
 
 
 TABLE = and(M,M);
@@ -264,7 +191,7 @@ if (firstCall ~= 0)
 end
 
 function tp=getTOCSYProb(TOCSYPEAKS,AATYPE,SSTYPE,len)
-nm=sprintf('~/NVR/trunk/HDB/%s%s.mat',char(AATYPE),char(SSTYPE));
+nm=sprintf('NVR/HDB/%s%s.mat',char(AATYPE),char(SSTYPE));
 
 SHIFTS=load(nm);SHIFTS=SHIFTS.shifts;
 MB=zeros(length(SHIFTS(1,:)))+999;
@@ -276,11 +203,6 @@ end
 
 h=hungarian(MB');
 
-%if ((AATYPE == 'E') & (char(SSTYPE) == 'H'))
-%   fprintf(1, 'size(MB,1) = %d, size(MB,2) = %d\n',size(MB,1),size(MB,2));
-%   keyboard
-%end
-
 tp=1;
 for(i=1:length(TOCSYPEAKS))
    pos=h(i);
@@ -288,18 +210,9 @@ for(i=1:length(TOCSYPEAKS))
       if(SHIFTS(2,pos)==0)
          p=0;
 	 fprintf(1, 'setting a variable to 0 in getTOCSYPROB.\n');
-%	 keyboard
       else
          p=MB(i,pos)/SHIFTS(2,pos);
-%	 fprintf (1, 'p = %f MB(i,pos) = %f SHIFTS(2,pos) = %f\n',...
-%		  p, MB(i,pos), SHIFTS(2,pos));
       end
       tp=tp*(2*(1-tcdf(p,len)));%i should probably have just used pdf here
-%      fprintf(1, 'tp = %f\n', tp);
    end
 end
-
-%if ((AATYPE == 'E') & (char(SSTYPE) == 'H'))
-%   fprintf(1, 'size(MB,1) = %d, size(MB,2) = %d\n',size(MB,1),size(MB,2));
-%   keyboard
-%end

@@ -90,9 +90,7 @@ NTH=min(NTH,9.33);
 
 
 fprintf(1, 'NTH set to %f\n', NTH);
-fprintf(1, 'enter return to cont.\n');
 %fprintf(1, 'KEYBOARD DISFUNCTIONAL FOR AUTOMATED TEST\n');
-keyboard
 
 %fprintf(1, 'NTH is originally equal to %f\n', NTH);
 
@@ -103,7 +101,6 @@ keyboard
 %fprintf(1, 'or set NTH to 5.2 if the protein is 1GB1.\n');
 %fprintf(1, 'or set NTH to 8.65 if the NOEs come from MZ_UBQ.\n');
 %keyboard
-fprintf(1, 'NTH = %f\n', NTH);
 
 ASSIGNTABLE = ones(length(HSHIFTS),size(VECTORS,1))/size(VECTORS,1);
 OASSIGNTABLE=ASSIGNTABLE;

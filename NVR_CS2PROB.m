@@ -1,64 +1,7 @@
 function [M] = NVR_CS2PROB(TABLE,H,N,TYPES,SSTRUCT,NOES,ALLDISTS, ...
 			   NTH,ROWIN,COLIN, truncateProbabilities);
 
-%NVR_HD2PROB: This computes assignment probabilities based on BMRB statistics, it is not meant
-%             to be called by the user
-
-
-%////////////////////////////////////////////////////////////////////////////////////////////
-%//  NVR_CS2PROB.m
-%//
-%//  Version:		0.1
-%//
-%//  Description:	 This computes assignment probabilities based on BMRB statistics
-%//
-%// authors:
-%//    initials    name            organization 					email
-%//   ---------   --------------  ------------------------    ------------------------------
-%//     CJL         Chris Langmead  Dartmouth College         langmead@dartmouth.edu
-%//
-%//
-%// history:
-%//     when        who     what
-%//     --------    ----    ----------------------------------------------------------
-%//     12/02/03    CJL 	 initial version for publication [Langmead et al, J Biomol NMR 2004]
-%//
-%////////////////////////////////////////////////////////////////////////////////////////////
-
-%    NVR_CS2PROB
-%    This library is free software; you can redistribute it and/or
-%    modify it under the terms of the GNU Lesser General Public
-%    License as published by the Free Software Foundation; either
-%    version 2.1 of the License, or (at your option) any later version.
-
-%    This library is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-%    Lesser General Public License for more details.
-
-%    You should have received a copy of the GNU Lesser General Public
-%    License along with this library; if not, write to the Free Software
-%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-% 		Contact Info:
-%							Bruce Randall Donald
-%							HB 6211
-%							Dartmouth College
-%							Hanover, NH 03755
-%							brd@cs.dartmouth.edu
-
-% 		If you use publish any results derived from the use of this program please cite:
-%		"An Expectation/Maximization Nuclear Vector Replacement Algorithm for Automated NMR Resonance Assignments," 
-%		C. J. Langmead and B. R. Donald, 
-%		Journal of Biomolecular NMR, 2004 (in press)
-
-
-%  Copyright (C) 2003  Christopher James Langmead and Bruce R. Donald
-%
-%  <signature of Bruce Donald>, 2 December 2003
-%  Bruce Donald, Professor of Computer Science
-
-FILTERS=load('~/NVR/trunk/CHEMSHIFTSTATS/FILTERS');FILTERS=FILTERS.FILTERS;
+FILTERS=load('NVR/CHEMSHIFTSTATS/FILTERS');FILTERS=FILTERS.FILTERS;
 
 %the stats for the shifts were obtained from the wishart group webpage
 %http://redpoll.pharmacy.ualberta.ca/RefDB/stat.html
@@ -143,68 +86,6 @@ for(i=1:size(M,1))
    M(i,:)=M(i,:)/sum(M(i,:));
 end
 
-
-% $$$ %make square, if needed
-% $$$ if(size(M,1)-size(M,2)~=0)
-% $$$    F=ones(max(size(M)));
-% $$$    F(1:size(M,1),1:size(M,2))=M;
-% $$$    HM=F;   
-% $$$    for(i=1:size(HM,1))
-% $$$       HM(i,:)=HM(i,:)/sum(HM(i,:));
-% $$$    end
-% $$$ else
-% $$$    HM=M;
-% $$$ end
-% $$$ 
-% $$$ V = HM*0;TABLE = and(HM,HM);
-% $$$ last = sum(sum(TABLE));
-% $$$ for(q=1:1)
-% $$$    h=hungarian(HM*-1);
-% $$$    V = HM*0;
-% $$$    for(i=1:size(HM,1))
-% $$$       V(i,h(i)) = 100;
-% $$$    end
-% $$$    foo = deleteUnlikely(V,TABLE,HM);
-% $$$    TABLE = and(TABLE,foo);
-% $$$    
-% $$$    nlast = sum(sum(TABLE));
-% $$$    for(i=1:100)
-% $$$       NP = NOE_PRUNE(TABLE(1:size(M,1),:),NOES,ALLDISTS,NTH,ROWIN,COLIN);
-% $$$       TABLE(1:size(M,1),:)=and(TABLE(1:size(M,1),:),NP);
-% $$$       if(sum(sum(TABLE)) == nlast)
-% $$$          break;
-% $$$       end
-% $$$       nlast = sum(sum(TABLE));
-% $$$    end
-% $$$    
-% $$$    HM = HM.*TABLE;
-% $$$    for(i=1:size(HM,1))
-% $$$      if (sum(HM(i,:)) == 0)
-% $$$        fprintf('warning, was attempting to divide by 0\n');
-% $$$        keyboard
-% $$$      else
-% $$$        HM(i,:) = HM(i,:)/sum(HM(i,:));
-% $$$      end
-% $$$    end
-% $$$    
-% $$$    if(sum(sum(TABLE))==last)
-% $$$       break
-% $$$    end
-% $$$    last = sum(sum(TABLE));
-% $$$    
-% $$$ end
-% $$$ 
-% $$$ 
-% $$$ M=HM(1:size(M,1),1:size(M,2));
-% $$$ 
-% $$$ %renornmalize
-% $$$ for(i=1:size(M,1))
-% $$$    if(sum(M(i,:))==0)
-% $$$       M(i,:)=1;
-% $$$    end
-% $$$ 
-% $$$    M(i,:)=M(i,:)/sum(M(i,:));
-% $$$ end
 
 function p = getProb(h,n,SSTYPE,FILTERS,TY,truncateProbabilities, printDetails)%
 
@@ -330,9 +211,6 @@ if (truncateProbabilities)
        elseif (coeff2 > maxCoeff2)
 	 maxCoeff2 = coeff2
        end
-      
-      
-      
       end
       p=0;
       p1 = 0;

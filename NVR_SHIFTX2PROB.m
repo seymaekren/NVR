@@ -5,64 +5,7 @@ function [M, differenceMatrixH, differenceMatrixN] = NVR_SHIFTX2PROB(TABLE,...
 						  SHIFTX_Filename,...
 						  truncateProbabilities);
 
-%NVR_SHIFTX2PROB: This computes assignment probabilities based on the program SHIFTX, it is not meant
-%             to be called by the user
-
-
-%////////////////////////////////////////////////////////////////////////////////////////////
-%//  NVR_SHIFTX2PROB.m
-%//
-%//  Version:		0.1
-%//
-%//  Description:	 This computes assignment probabilities based on BMRB statistics
-%//
-%// authors:
-%//    initials    name            organization 					email
-%//   ---------   --------------  ------------------------    ------------------------------
-%//     CJL         Chris Langmead  Dartmouth College         langmead@dartmouth.edu
-%//
-%//
-%// history:
-%//     when        who     what
-%//     --------    ----    ----------------------------------------------------------
-%//     12/02/03    CJL 	 initial version for publication [Langmead et al, J Biomol NMR 2004]
-%//
-%////////////////////////////////////////////////////////////////////////////////////////////
-
-%    NVR_SHIFTX2PROB
-%    This library is free software; you can redistribute it and/or
-%    modify it under the terms of the GNU Lesser General Public
-%    License as published by the Free Software Foundation; either
-%    version 2.1 of the License, or (at your option) any later version.
-
-%    This library is distributed in the hope that it will be useful,
-%    but WITHOUT ANY WARRANTY; without even the implied warranty of
-%    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-%    Lesser General Public License for more details.
-
-%    You should have received a copy of the GNU Lesser General Public
-%    License along with this library; if not, write to the Free Software
-%    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-% 		Contact Info:
-%							Bruce Randall Donald
-%							HB 6211
-%							Dartmouth College
-%							Hanover, NH 03755
-%							brd@cs.dartmouth.edu
-
-% 		If you use publish any results derived from the use of this program please cite:
-%		"An Expectation/Maximization Nuclear Vector Replacement Algorithm for Automated NMR Resonance Assignments," 
-%		C. J. Langmead and B. R. Donald, 
-%		Journal of Biomolecular NMR, 2004 (in press)
-
-
-%  Copyright (C) 2003  Christopher James Langmead and Bruce R. Donald
-%
-%  <signature of Bruce Donald>, 2 December 2003
-%  Bruce Donald, Professor of Computer Science
-
-FILTERS=load('~/NVR/trunk/CHEMSHIFTSTATS/SHIFTXFILTERS');FILTERS=FILTERS.FILTERS;
+FILTERS=load('NVR/CHEMSHIFTSTATS/SHIFTXFILTERS');FILTERS=FILTERS.FILTERS;
 
 [rn TY SS ha hn nf cb ca co]= textread(SHIFTX_Filename,'%f %s %s %f %f %f %f %f %f');
 
@@ -73,35 +16,6 @@ M=TABLE*0+1/size(TABLE,1);
 
 differenceMatrixH = zeros(size(M,1),size(M,2));
 differenceMatrixN = zeros(size(M,1),size(M,2));
-% $$$ fid = fopen('shiftxCS_Differences.txt', 'w');
-% $$$ fprintf(1, 'check out shiftxCS_Differences.txt\n');
-% $$$ 
-% $$$ for(i=1:size(TABLE,1))
-% $$$   j = i;%   for(j=1:length(COLIN))
-% $$$ 
-% $$$   h = H(i)-PRED(COLIN(j),2);
-% $$$   n = N(i)-PRED(COLIN(j),3);
-% $$$   
-% $$$   fprintf(fid, '%f %f\n', h, n);
-% $$$   
-% $$$ %end
-% $$$ end
-% $$$ fclose(fid);
-% $$$ for(i=1:size(TABLE,1))
-% $$$    for(j=1:length(COLIN))
-% $$$ 
-% $$$      if (i == j)
-% $$$        continue;
-% $$$      end
-% $$$        
-% $$$      h = H(i)-PRED(COLIN(j),2);
-% $$$      n = N(i)-PRED(COLIN(j),3);
-% $$$      
-% $$$      fprintf(fid, '%f %f\n', h, n);
-% $$$        
-% $$$    end
-% $$$ end
-
 
 for(i=1:size(TABLE,1))
    for(j=1:length(COLIN))
@@ -121,19 +35,6 @@ for(i=1:size(TABLE,1))
       
       differenceMatrixH(i,j) = 1/(1+exp(abs(h)));
       differenceMatrixN(i,j) = 1/(1+exp(abs(n)));
-      
-      
-% $$$       if ((i == 24) & (j == 24))
-% $$$ 	assert (COLIN(j) == 24);
-% $$$ 	fprintf(1, 'i=24,j=24\n');
-% $$$ 	fprintf(1, 'H.CS = %f SHIFTX PRED H.CS = %f\n', H(i), PRED(COLIN(j),2));
-% $$$ 	fprintf(1, 'N.CS = %f SHIFTX PRED N.CS = %f\n', N(i), PRED(COLIN(j),3));
-% $$$       end
-      
-      
-      %      fprintf(1, 'h = %f n= %f\n',h,n);
-      
-%      keyboard
       
       if(strcmp(T,'A')==1)
          M(i,j)=getProb(h,n, S,FILTERS,1,truncateProbabilities,printDetails);
@@ -197,29 +98,6 @@ for(i=1:size(M,1))
    M(i,:)=M(i,:)/sum(M(i,:));
    %   end
 end
-
-% $$$ nlast = sum(sum(TABLE));
-% $$$ for(i=1:100)
-% $$$    NP = NOE_PRUNE(TABLE(1:size(M,1),:),NOES,ALLDISTS,NTH,ROWIN,COLIN);
-% $$$    TABLE(1:size(M,1),:)=and(TABLE(1:size(M,1),:),NP);
-% $$$    if(sum(sum(TABLE)) == nlast)
-% $$$       break;
-% $$$    end
-% $$$    nlast = sum(sum(TABLE));
-% $$$ end
-% $$$ 
-% $$$ M = M.*TABLE;
-% $$$ 
-% $$$ %renornmalize
-% $$$ for(i=1:size(M,1))
-% $$$    if(sum(M(i,:))==0)
-% $$$       M(i,:)=1;
-% $$$    end
-% $$$ %     fprintf(1, 'shiftx bpg construction removed all entries from row #%d',i);
-% $$$ %   else
-% $$$    M(i,:)=M(i,:)/sum(M(i,:));
-% $$$ %   end
-% $$$ end
 
 
 function p = getProb(h,n,SSTYPE,FILTERS,TY, truncateProbabilities,printDetails)%
