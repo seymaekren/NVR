@@ -63,7 +63,7 @@ end
 fclose(fid);
     
 
-printNOE_List(NOES, inputModeIndex, inputModelIndex);
+printNOE_List(NOES);
 printBinaryDistances      (COLIN, NTH, ALLDISTS, inputModeIndex, inputModelIndex);
 printBinaryDistancesForQAP(COLIN, NTH, ALLDISTS);
 printDistances(ALLDISTS);
