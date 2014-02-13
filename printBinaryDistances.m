@@ -1,7 +1,8 @@
-function printBinaryDistances(COLIN, NTH, ALLDISTS);
+function printBinaryDistances(COLIN, NTH, ALLDISTS)
 
-fid = fopen('BinaryDistances.txt','w');
-fprintf(1, 'printing to BinaryDistances.txt\n');
+filename = sprintf('OutputFiles/BinaryDistances.txt');
+fid = fopen(filename,'w');
+fprintf(1, 'printing to %s\n', filename);
 for residue1Index = 1:length(COLIN)
   for residue2Index =  1:length(COLIN)
     if (ALLDISTS(COLIN(residue1Index),COLIN(residue2Index)) > NTH)
