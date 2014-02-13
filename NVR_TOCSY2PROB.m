@@ -1,4 +1,4 @@
-function M = NVR_TOCSY2PROB(peakIDs,H,N,TYPES,SSTRUCT,NOES,ALLDISTS,NTH,ROWIN,COLIN);
+function M = NVR_TOCSY2PROB(peakIDs,H,N,TYPES,SSTRUCT,NOES,ALLDISTS,ROWIN,COLIN);
 
 
 [TH1,TH2,TN,TRN]=textread('InputFiles/TOCSY.m','%f %f %f %f');
@@ -132,7 +132,7 @@ for(i=1:size(M,1))
             M(i,j)=getTOCSYProb(TOCSYPEAKS,'Y',SSTRUCT(j),length(TYPES));
          end
       else
-         PROBLEM = TYPES(j)   
+         PROBLEM = TYPES(j); 
       end
       
    end
@@ -160,23 +160,6 @@ end
 
 
 
-TABLE = and(M,M);
-nlast = sum(sum(TABLE));
-for(i=1:100)
-   NP = NVR_NOE2PROB(TABLE(1:size(M,1),:),NOES,ALLDISTS,NTH,ROWIN,COLIN);
-   %note that noe pruning is internally called here.
-   TABLE(1:size(M,1),:)=and(TABLE(1:size(M,1),:),NP);
-   if(sum(sum(TABLE)) == nlast)
-      break;
-   end
-   nlast = sum(sum(TABLE));
-   M = M.*TABLE;
-   for(i=1:size(M,1))
-      M(i,:)=M(i,:)/sum(M(i,:));
-   end
-end
-
-%renornmalize
 for(i=1:size(M,1))
    M(i,:)=M(i,:)/sum(M(i,:));
 end
@@ -191,12 +174,13 @@ if (firstCall ~= 0)
 end
 
 function tp=getTOCSYProb(TOCSYPEAKS,AATYPE,SSTYPE,len)
-nm=sprintf('NVR/HDB/%s%s.mat',char(AATYPE),char(SSTYPE));
+nm=sprintf('/Users/student/Desktop/NVR_CA/trunk/HDB/%s%s.mat',char(AATYPE),char(SSTYPE));
 
-SHIFTS=load(nm);SHIFTS=SHIFTS.shifts;
+SHIFTS=load(nm);
+SHIFTS=SHIFTS.shifts;
 MB=zeros(length(SHIFTS(1,:)))+999;
-for(i=1:length(TOCSYPEAKS))
-   for(j=1:size(SHIFTS,2))
+for i=1:length(TOCSYPEAKS)
+   for j=1:size(SHIFTS,2)
       MB(i,j)=abs(TOCSYPEAKS(i)-SHIFTS(1,j));
    end
 end
@@ -204,7 +188,7 @@ end
 h=hungarian(MB');
 
 tp=1;
-for(i=1:length(TOCSYPEAKS))
+for i=1:length(TOCSYPEAKS)
    pos=h(i);
    if(MB(i,pos)<100)
       if(SHIFTS(2,pos)==0)
