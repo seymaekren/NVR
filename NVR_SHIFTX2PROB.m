@@ -65,7 +65,7 @@ function [M, differenceMatrixH, differenceMatrixN] = NVR_SHIFTX2PROB(TABLE,...
 %  <signature of Bruce Donald>, 2 December 2003
 %  Bruce Donald, Professor of Computer Science
 
-FILTERS=load('/InputFiles/SHIFTX_FILTERS');
+FILTERS=load('/InputFiles/SHIFTX_FILTERS_NEW');
 FILTERS=FILTERS.FILTERS;
 
 [rn TY SS ha hn nf ca cb co]= textread(SHIFTX_Filename,'%f %s %s %f %f %f %f %f %f');
