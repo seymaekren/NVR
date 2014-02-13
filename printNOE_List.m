@@ -1,6 +1,6 @@
 function printNOE_List(NOES)
 
-fid = fopen('NOE_List.txt','w');
+fid = fopen('OutputFiles/NOE_List.txt','w');
 fprintf(1, 'printing to NOE_List.txt\n');
 
 filename2 = 'rawNOE_List_peakIndices.txt';
