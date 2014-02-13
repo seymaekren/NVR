@@ -1,12 +1,12 @@
 function [ROWIN, COLIN, ASSIGNTABLE, MASTER, HDE, TP, CP, SXCP, SSCP, ...
-	  RDC1, RDC2, NTH, RP1, RP2, S1, S2,marsShiftScore, ...
-	  MB_ShiftScore, numCS] ...
-    = initialize(peaks,rdcs,HDEXCHANGE, peakIDs, NOES, ...
+	  RDC1, RDC2, NTH, RP1, RP2, S1, S2] ...
+    = initialize(peaks, rdcs, HDEXCHANGE, peakIDs, NOES, ...
 		 VECTORS,TYPES, RESNUMS,SSTRUCT, ...
 		 HBOND, ALLDISTS, ...
 		 IALLDISTS, ...
 		 SHIFTS_Filename, SHIFTX_Filename, useCH_RDCs, ...
-		 useHD_Routines, useTOCSY, truncateProbabilities);
+		 useHD_Routines, useTOCSY, truncateProbabilities, ...
+		 b_runningMBP, b_runningEIN, b_running1FQB,b_runningPoln)
 
 %truncateProbabilities is only taken into account if NVR routines
 %are used.
@@ -24,6 +24,7 @@ else
 end
 HSHIFTS = peaks(:,1);
 NSHIFTS = peaks(:,2);
+CASHIFTS = peaks(:,3);
 RDC1    = rdcs(:,1);
 RDC2    = rdcs(:,2);
 
@@ -36,71 +37,13 @@ if(mu-12.9>0)
    
 end
 
+
 NTH = NTH + 2.34; %this is due to 1G6J max. violation distance.
-
-%fprintf(1, 'template is 1AAR, incrementing NTH a little bit.\n');
-%NTH = NTH + 0.07;
-
-%fprintf(1, 'template is Poln, incrementing NTH a little bit.\n');
-%NTH = NTH + 0.20;
-
-
-
-%fprintf(1, 'template is GB1, incrementing NTH a little bit.\n');
-
-fprintf(1, 'incrementing NTH automatically by 1.5 A\n');
-NTH = NTH + 1.5;
 
 NTH=min(NTH,9.33);
 
 
-%fprintf(1, 'setting NTH to 5 A for MBP\n');
-%NTH = 5;
-
-%fprintf(1, 'setting NTH to 5 A for the raw NOE data of ff2\n');
-%NTH = 5;
-
-%fprintf(1, 'setting NTH to 5 A for cam data from BMRB (CAM2)\n');
-%NTH = 5;
-
-%fprintf(1, 'setting NTH to %f for MBP.\n', NTH);
-
-%NTH = 7.2;
-%fprintf(1, 'setting NTH to %f for EIN.\n', NTH);
-
-%NTH = 9.33;
-%fprintf(1, 'setting NTH to %f for CAM.\n', NTH);
-
-%fprintf(1, 'template is 1EF1, incrementing NTH a little bit.\n');
-%NTH = NTH + 0.87;
-
-%fprintf(1, 'template is my generated 1EF1 model, setting NTH high.\n');
-%NTH = 10.35;
-
-
-%fprintf(1, 'template is 1RFA, incrementing NTH a little bit.\n');
-%NTH = NTH + 1.89;
-
-%fprintf(1, 'template is 1H8C, incrementing NTH a little bit.\n');
-%NTH = NTH + 1.01;
-
-%fprintf(1, 'template is 1VCB, incrementing NTH a little bit.\n');
-%NTH = NTH + 1.95;
-
-
-
-fprintf(1, 'NTH set to %f\n', NTH);
-%fprintf(1, 'KEYBOARD DISFUNCTIONAL FOR AUTOMATED TEST\n');
-
-%fprintf(1, 'NTH is originally equal to %f\n', NTH);
-
-%NTH = 9.33; 
-
-%fprintf(1, 'NTH manually set to %f\n', NTH);
-%fprintf(1, 'set NTH to 9.33 if the protein is FF2.\n');
-%fprintf(1, 'or set NTH to 5.2 if the protein is 1GB1.\n');
-%fprintf(1, 'or set NTH to 8.65 if the NOEs come from MZ_UBQ.\n');
-%keyboard
+fprintf(1, 'NTH = %f\n', NTH);
 
 ASSIGNTABLE = ones(length(HSHIFTS),size(VECTORS,1))/size(VECTORS,1);
 OASSIGNTABLE=ASSIGNTABLE;
@@ -120,7 +63,7 @@ end
 ASSIGNTABLE = and(ASSIGNTABLE,HDE);
 
 foundZeroEntryOnDiagonal = 0;
-for(i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2)))
+for i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2))
    if (ASSIGNTABLE(i,i) == 0)
      fprintf(1, 'after AND with HDE, i = %d ASSIGNTABLE(i,i) = 0\n',i);
      foundZeroEntryOnDiagonal = 1;
@@ -133,19 +76,18 @@ TP =   ASSIGNTABLE;
 %keyboard
 if (useTOCSY)
   TP = NVR_TOCSY2PROB(peakIDs,HSHIFTS,NSHIFTS,TYPES,SSTRUCT,NOES, ...
-		      IALLDISTS,NTH,ROWIN,COLIN);
+		      IALLDISTS,ROWIN,COLIN);
   
 end
 ASSIGNTABLE = and(ASSIGNTABLE,TP );
 
 
 
-for(i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2)))
+for i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2))
    if (ASSIGNTABLE(i,i) == 0)
      fprintf(1, 'after AND with TP, i = %d ASSIGNTABLE(i,i) = 0\n', ...
 	     i);
      foundZeroEntryOnDiagonal = 1;
-     %keyboard
    end
 end
 
@@ -153,31 +95,35 @@ if (useHD_Routines)
   [CP] = HD_CS2PROB(OASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,SSTRUCT, ...
 		    NOES,IALLDISTS,NTH,ROWIN,COLIN);
 else
-  [CP] = NVR_CS2PROB(ASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,SSTRUCT, ...
-		     NOES,ALLDISTS,NTH,ROWIN,COLIN, truncateProbabilities);
+  [CP] = NVR_CS2PROB(ASSIGNTABLE,HSHIFTS,NSHIFTS,CASHIFTS,TYPES,SSTRUCT, ...
+		     NOES,ALLDISTS,NTH,ROWIN,COLIN, truncateProbabilities, ...
+		     b_runningMBP, b_runningEIN, b_running1FQB);
 end
 ASSIGNTABLE = and(ASSIGNTABLE,CP);
 
-for(i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2)))
+for i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2))
    if (ASSIGNTABLE(i,i) == 0)
      fprintf(1, 'after AND with CP, i = %d ASSIGNTABLE(i,i) = 0\n',i);
      foundZeroEntryOnDiagonal = 1;
-     %     keyboard
    end
 end
 
+
 %prune via the program shiftx
+
 if (useHD_Routines)
-  [SXCP] = HD_SHIFTX2PROB(OASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,SSTRUCT, ...
+  [SXCP] = HD_SHIFTX2PROB(OASSIGNTABLE,HSHIFTS,NSHIFTS,CASHIFTS,TYPES,SSTRUCT, ...
 			  NOES,IALLDISTS,NTH,ROWIN,COLIN, SHIFTX_Filename);
 else
-  [SXCP]      = NVR_SHIFTX2PROB(ASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,SSTRUCT, ...
+  [SXCP]      = NVR_SHIFTX2PROB(ASSIGNTABLE,HSHIFTS,NSHIFTS,CASHIFTS,TYPES,SSTRUCT, ...
 				NOES,ALLDISTS,NTH,ROWIN,COLIN, ...
-				SHIFTX_Filename, truncateProbabilities);
+				SHIFTX_Filename, truncateProbabilities, ...
+				b_runningMBP, b_runningEIN, ...
+				b_runningPoln, b_running1FQB);
 end
 ASSIGNTABLE = and(ASSIGNTABLE,SXCP);   
 
-for(i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2)))
+for i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2))
    if (ASSIGNTABLE(i,i) == 0)
      fprintf(1, 'After AND with SXCP, i = %d ASSIGNTABLE(i,i) = 0\n',i);
      foundZeroEntryOnDiagonal = 1;
@@ -185,49 +131,46 @@ for(i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2)))
    end
 end
 
+
 %prune via the program shifts
-if (useHD_Routines)
-  [SSCP] = HD_SHIFTS2PROB(OASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,SSTRUCT, ...
-			  NOES,IALLDISTS,NTH,ROWIN,COLIN, SHIFTS_Filename, ...
-			  SHIFTX_Filename);
-else
-  [SSCP] = NVR_SHIFTS2PROB(ASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,SSTRUCT, ...
-			   NOES,ALLDISTS,NTH,ROWIN,COLIN, SHIFTS_Filename, ...
-			   SHIFTX_Filename, truncateProbabilities);
-end
-ASSIGNTABLE = and(ASSIGNTABLE,SSCP);
+% if (useHD_Routines)
+%   [SSCP] = HD_SHIFTS2PROB(OASSIGNTABLE,HSHIFTS,NSHIFTS,TYPES,CASHIFTS,SSTRUCT, ...
+% 			  NOES,IALLDISTS,NTH,ROWIN,COLIN, SHIFTS_Filename, ...
+% 			  SHIFTX_Filename);
+% else
+%   [SSCP] = NVR_SHIFTS2PROB(ASSIGNTABLE,HSHIFTS,NSHIFTS,CASHIFTS,TYPES,SSTRUCT, ...
+% 			   NOES,ALLDISTS,NTH,ROWIN,COLIN, SHIFTS_Filename, ...
+% 			   SHIFTX_Filename, truncateProbabilities, ...
+% 			   b_runningMBP, b_runningEIN, b_running1FQB);
+% end
+% ASSIGNTABLE = and(ASSIGNTABLE,SSCP);
+% 
+% for i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2))
+%    if (ASSIGNTABLE(i,i) == 0)
+%      fprintf(1, 'After AND with SSCP, i = %d ASSIGNTABLE(i,i) = 0\n',i);
+%      foundZeroEntryOnDiagonal = 1;
+%    end
+% end
+% 
+% if (foundZeroEntryOnDiagonal)
+%   fprintf(1, 'found zero entries on diagonal of the matrices. proceed?\n');
+%   keyboard
+% end
 
-
-
-
-for(i=1:min(size(ASSIGNTABLE,1),size(ASSIGNTABLE,2)))
-   if (ASSIGNTABLE(i,i) == 0)
-     fprintf(1, 'After AND with SSCP, i = %d ASSIGNTABLE(i,i) = 0\n',i);
-     foundZeroEntryOnDiagonal = 1;
-     %     keyboard
-   end
-end
-
-if (foundZeroEntryOnDiagonal)
-  fprintf(1, 'found zero entries on diagonal of the matrices. proceed?\n');
-  keyboard
-end
-
-
-SSCP=SSCP.*ASSIGNTABLE;SXCP=SXCP.*ASSIGNTABLE;CP=CP.*ASSIGNTABLE;TP=TP.*ASSIGNTABLE;HDE=HDE.*ASSIGNTABLE;
-
-%origMASTER = MASTER;
-%for peakIndex= 1:size(MASTER,1);
-%  MASTER(peakIndex,peakIndex) = 1;
-%end
-
+SSCP=ASSIGNTABLE;
+%SXCP=ASSIGNTABLE;
+%SSCP=SSCP.*ASSIGNTABLE;
+SXCP=SXCP.*ASSIGNTABLE;
+CP=CP.*ASSIGNTABLE;
+TP=TP.*ASSIGNTABLE;
+HDE=HDE.*ASSIGNTABLE;
 
 S1 = []; S2 = []; RP1 = []; RP2 = []; 
 
 %if (useCH_RDCs)
-  fprintf(1, 'initialize assigned the alignment tensor');
-  fprintf(1, ' and score matrices to 0.\n');
-  fprintf(1, 'later can compute the correct matrices and tensors.\n');
+%   fprintf(1, 'initialize assigned the alignment tensor');
+%   fprintf(1, ' and score matrices to 0.\n');
+%   fprintf(1, 'later can compute the correct matrices and tensors.\n');
 %else
 %  S1 = updateTen(MASTER,RDC1,VECTORS);
 %  S2 = updateTen(MASTER,RDC2,VECTORS);
@@ -236,9 +179,9 @@ S1 = []; S2 = []; RP1 = []; RP2 = [];
 %end
 %MASTER = origMASTER;
 
-marsShiftScore = computeMarsShiftScore(ASSIGNTABLE, HSHIFTS, NSHIFTS, ...
-				       SHIFTS_Filename);
-
-[MB_ShiftScore,numCS]  = computeMB_ShiftScore(ASSIGNTABLE, HSHIFTS, NSHIFTS, ...
-				       SHIFTS_Filename);
+% $$$ marsShiftScore = computeMarsShiftScore(ASSIGNTABLE, HSHIFTS, NSHIFTS, ...
+% $$$ 				       SHIFTS_Filename);
+% $$$ 
+% $$$ [MB_ShiftScore,numCS]  = computeMB_ShiftScore(ASSIGNTABLE, HSHIFTS, NSHIFTS, ...
+% $$$ 				       SHIFTS_Filename);
 
