@@ -59,7 +59,7 @@ function [M] = NVR_CS2PROB(TABLE,H,N,CA,TYPES,SSTRUCT,NOES,ALLDISTS, ...
 %  <signature of Bruce Donald>, 2 December 2003
 %  Bruce Donald, Professor of Computer Science
 
-FILTERS=load('InputFiles/FILTERS_SEYMA');
+FILTERS=load('InputFiles/FILTERS_NEW');
 FILTERS=FILTERS.FILTERS; 
 
 %the stats for the shifts were obtained from the wishart group webpage
